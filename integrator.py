@@ -1,6 +1,6 @@
-from migen.genlib.fifo import syncFIFO
+from migen.genlib.fifo import SyncFIFO
 from migen.fhdl.verilog import convert
-from migen.fhdl.module import *
+from migen.fhdl.module import Module
 
 class Interface():
     #port direction for connected kernal
@@ -14,7 +14,7 @@ class Interface():
     def add_mode_port(self, name, *args):
         i_ports = []
         o_ports = []
-        assert len(kwargs) == self.io, "length of mode port io needs to be the same as interface io"
+        assert len(args) == self.io, "length of mode port io needs to be the same as interface io"
         for i in args:
             port_type, port = i.split("_", maxsplit = 1)
             assert port in self.io, "port {} not found".format(port)
@@ -86,9 +86,9 @@ class Stream(Communication):
             ostream = (ostream, "fifo")
         )
 
-        class fifo(syncFIFO):
+        class fifo(SyncFIFO):
             def __init__(self, width, depth):
-                syncFIFO.__init__(width,depth)
+                SyncFIFO.__init__(self,width,depth)
                 strm_in_dout    = self.dout
                 strm_in_empty_n = self.readable
                 strm_in_read    = self.re
@@ -99,7 +99,7 @@ class Stream(Communication):
                             "ostream": ["strm_out_din", "strm_out_full_n", "strm_out_write"]}
         
         myfifo = fifo(width, depth)
-        Communication.load_migen_module(myfifo, myfifo.ios)
+        self.load_migen_module(myfifo, myfifo.ios)
 
 
 class Kernal():
@@ -107,7 +107,7 @@ class Kernal():
         self.interfaces = {"infc":[], "mode_port":[]}
 
     #read parsed file for port_group information
-    def load_config(, identifier, type, file):
+    def load_config(self, identifier, type, file):
         pass
 
     def config_interface(self, interface, mode_port, **kwargs):
