@@ -1,6 +1,8 @@
 """TODO: Add docstring."""
-from migen.fhdl.module import Module, Signal, kwargs
-from migen.genlib.fifo import syncFIFO
+from migen.fhdl.module import Module
+from migen.fhdl.structure import Signal
+# from migen.fhdl.verilog import conve
+from migen.genlib.fifo import SyncFIFO
 
 
 class Interface():
@@ -20,7 +22,7 @@ class Interface():
         i_ports = []
         o_ports = []
         assert len(
-            kwargs
+            args
         ) == self.io, \
             'length of mode port io needs to be the same as interface io'
         for i in args:
@@ -107,11 +109,11 @@ class Stream(Communication):
                                istream=(istream, 'fifo'),
                                ostream=(ostream, 'fifo'))
 
-        class fifo(syncFIFO):
+        class fifo(SyncFIFO):
             """TODO: Add docstring."""
 
             def __init__(self, width, depth):
-                syncFIFO.__init__(width, depth)
+                SyncFIFO.__init__(width, depth)
                 self.dout
                 self.readable
                 self.re
@@ -126,7 +128,7 @@ class Stream(Communication):
                 }
 
         myfifo = fifo(width, depth)
-        Communication.load_migen_module(myfifo, myfifo.ios)
+        self.load_migen_module(myfifo, myfifo.ios)
 
 
 class Kernel():
@@ -142,7 +144,7 @@ class Kernel():
 
     def config_interface(self, interface, mode_port, **kwargs):
         """TODO: Add docstring."""
-        self.infc
+        # self.infc
 
 
 class Task():
@@ -174,7 +176,8 @@ class Task():
 
     def to_migen(self):
         """TODO: Add docstring."""
-        self
+        interface_set = self.interface_set
+        block = self.block
 
         # convert to migen
         class Wrapper(Module):
@@ -183,10 +186,10 @@ class Task():
             def __init__(self):
                 """TODO: Add docstring."""
                 signal_dic = {}
-                for infc in self.interface_set:
+                for infc in interface_set:
                     for port_name in infc.io:
                         signal_name = '{}_{}'.format(infc.name, port_name)
                         signal_dic[signal_name] = Signal(infc.io[port_name])
 
-                for idx in len(self.block['kernels']):
+                for idx in range(len(block['kernels'])):
                     pass

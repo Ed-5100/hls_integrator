@@ -170,3 +170,6 @@ parsetab.py
 *.build
 *.dist
 *.onefile-build
+
+# temp
+/temp
