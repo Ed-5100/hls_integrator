@@ -173,3 +173,4 @@ parsetab.py
 
 # temp
 /temp
+*.v
