@@ -3,9 +3,13 @@
 // Version: 2019.2.1
 // Copyright (C) 1986-2019 Xilinx, Inc. All Rights Reserved.
 // 
+// Description: adder module
+//  add(stream a, stream b, stream c):
+//      for i in range(depth):
+//          c[i] = a[i] + b[i]
 // ===========================================================
 
-`timescale 1 ns / 1 ps 
+`timescale 1 ns / 1 ps
 
 module add (
         ap_clk,

@@ -1,6 +1,8 @@
 // ==============================================================
 // Vivado(TM) HLS - High-Level Synthesis from C, C++ and SystemC v2019.2.1 (64-bit)
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+// Description: hls stream fifo
+// ===========================================================
 // ==============================================================
 
 `timescale 1 ns / 1 ps
@@ -87,29 +89,29 @@ always @ (posedge clk) begin
         internal_full_n <= 1'b1;
     end
     else begin
-        if (((if_read & if_read_ce) == 1 & internal_empty_n == 1) && 
+        if (((if_read & if_read_ce) == 1 & internal_empty_n == 1) &&
             ((if_write & if_write_ce) == 0 | internal_full_n == 0))
         begin
             mOutPtr <= mOutPtr - 4'd1;
             if (mOutPtr == 4'd0)
                 internal_empty_n <= 1'b0;
             internal_full_n <= 1'b1;
-        end 
-        else if (((if_read & if_read_ce) == 0 | internal_empty_n == 0) && 
+        end
+        else if (((if_read & if_read_ce) == 0 | internal_empty_n == 0) &&
             ((if_write & if_write_ce) == 1 & internal_full_n == 1))
         begin
             mOutPtr <= mOutPtr + 4'd1;
             internal_empty_n <= 1'b1;
             if (mOutPtr == DEPTH - 4'd2)
                 internal_full_n <= 1'b0;
-        end 
+        end
     end
 end
 
 assign shiftReg_addr = mOutPtr[ADDR_WIDTH] == 1'b0 ? mOutPtr[ADDR_WIDTH-1:0]:{ADDR_WIDTH{1'b0}};
 assign shiftReg_ce = (if_write & if_write_ce) & internal_full_n;
 
-fifo_w32_d8_A_shiftReg 
+fifo_w32_d8_A_shiftReg
 #(
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH),
@@ -121,5 +123,4 @@ U_fifo_w32_d8_A_ram (
     .a(shiftReg_addr),
     .q(shiftReg_q));
 
-endmodule  
-
+endmodule
